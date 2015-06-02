@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,235 +10,167 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:orientation="horizontal" >
 
         <Button
+            android:id="@+id/button1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/activity_vertical_margin"
-            android:onClick="getDeviceInfo"
-            android:text="获取设备信息" />
+            android:text="音乐欣赏" />
 
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:enabled="false"
-            android:onClick="connectionDevice"
-            android:text="连接设备"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/timer"
-            android:visibility="invisible"
+            android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.56"
-            android:onClick="StartTimer"
-            android:text="开始计时" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone" >
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_weight="1"
-            android:onClick="sendAndReceiveDataByControl"
-            android:text="控制端点发送接收数据" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/activity_vertical_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_weight="1"
-            android:onClick="sendDataByBulk"
-            android:text="批量端点传输数据" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/activity_vertical_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_weight="1"
-            android:onClick="receiveDataByBulk"
-            android:text="批量端点接收数据" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone" >
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_weight="1"
-            android:onClick="sendDataByControl"
-            android:text="控制通道发送数据" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_weight="1"
-            android:onClick="receiveDataByControl"
-            android:text="控制通道接收数据" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone" >
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_weight="1"
-            android:onClick="sendDataByBulk"
-            android:text="批量通道发送数据"
-            android:visibility="gone" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_weight="1"
-            android:onClick="receiveDataByBulkAllTime"
-            android:text="批量通道一直接收数据"
-            android:visibility="gone" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_weight="1"
-            android:onClick="sendReceiveDataByBulkAllTime"
-            android:text="批量通道一直发收数据" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_weight="1"
-            android:onClick="stop"
-            android:text="批量通道停止" />
+            android:text="K歌模式" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/btn_sendMusicData"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/activity_vertical_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_weight="1"
-            android:onClick="sendMusicData"
-            android:visibility="gone"
-            android:text="边放边录" />
-
-        <Button
-            android:id="@+id/btn_receivedMusicData"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/activity_vertical_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_weight="1"
-            android:onClick="receivedMusicData"
-            android:text="开始录音" />
-
-        <Button
-            android:id="@+id/btn_player"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/activity_vertical_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_weight="1"
-            android:onClick="player"
-            android:text="播放录音"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/btn_player"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/activity_vertical_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:onClick="setHeader"
-            android:text="转为wav文件" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/activity_vertical_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_weight="1"
-            android:onClick="stop"
-            android:visibility="gone"
-            android:text="停止发送" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/activity_vertical_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_weight="1"
-            android:onClick="chooice"
-             android:visibility="gone"
-            android:text="选择音乐文件" />
-    </LinearLayout>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:onClick="sendDataByBulk"
-         android:visibility="gone"
-        android:text="批量传输发送数据" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:background="@drawable/btn_shape"
-        android:onClick="clear"
-        android:text="清除数据" />
-
-    <ScrollView
-        android:id="@+id/srollview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:background="@drawable/message_shape"
-        android:padding="@dimen/activity_vertical_margin" >
 
         <TextView
-            android:id="@+id/tv_message"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </ScrollView>
+            android:id="@+id/xiaoguozhonglei"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:text="效果种类" />
+   	    
+   	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical" >
+        
+			<LinearLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="horizontal" >
+		        <Button
+		            android:id="@+id/xiaoguo1"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="效果1" />
+		        <Button
+		            android:id="@+id/xiaoguo2"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="效果2" />
+		        <Button
+		            android:id="@+id/xiaoguo3"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="效果3" />
+			</LinearLayout>
+		     
+			<LinearLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="horizontal" >
+		        <Button
+		            android:id="@+id/xiaoguo4"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="效果4" />
+		
+		        <Button
+		            android:id="@+id/xiaoguo5"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="效果5" />
+		
+		        <Button
+		            android:id="@+id/xiaoguo6"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="效果6" />
+			</LinearLayout>
+		</LinearLayout>
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+   	    
+        <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal" >
+        
+        	<TextView
+	            android:id="@+id/xiaoguozhonglei"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="效果强度" />
 
+        	<SeekBar
+        	    android:id="@+id/xiaoguoqiangdubar"
+        	    android:layout_width="match_parent"
+        	    android:layout_height="wrap_content"
+        	    android:layout_weight="1" />
+        	
+        </LinearLayout>
+        
+        <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal" >
+        	
+        	<TextView
+	            android:id="@+id/erjiyinliang"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="耳机音量" />
+
+        	<SeekBar
+        	    android:id="@+id/erjiyinliangbar"
+        	    android:layout_width="match_parent"
+        	    android:layout_height="wrap_content"
+        	    android:layout_weight="1" />
+	        	
+	   </LinearLayout>   
+	   
+        <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal" >
+	        		
+        	<TextView
+	            android:id="@+id/huatongyinliang"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="话筒音量" />
+
+        	<SeekBar
+        	    android:id="@+id/huatongyinliangbar"
+        	    android:layout_width="match_parent"
+        	    android:layout_height="wrap_content"
+        	    android:layout_weight="1" />
+        </LinearLayout>
+        
+	</LinearLayout>	    
+
+	 <LinearLayout
+		 android:layout_width="match_parent"
+		 android:layout_height="wrap_content"
+		 android:orientation="horizontal" >
+	   	    
+	     <Button
+            android:id="@+id/shanbiswitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="闪避开关" />
+        <Button
+            android:id="@+id/recstart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rec开始" />
+        <Button
+            android:id="@+id/openrec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="播放录音" />
+	        
+	</LinearLayout>	 
+	
 </LinearLayout>

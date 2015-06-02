@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_main_);
 		tv_message = (TextView) findViewById(R.id.tv_message);
 		btn_sendMusicData = (Button) findViewById(R.id.btn_sendMusicData);
 		btn_receivedMusicData = (Button) findViewById(R.id.btn_receivedMusicData);
