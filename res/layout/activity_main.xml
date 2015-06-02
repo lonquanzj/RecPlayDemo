@@ -13,16 +13,19 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/listensong"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="0.27"
             android:text="音乐欣赏" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/singsong"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="0.22"
             android:text="K歌模式" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -160,17 +163,40 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="闪避开关" />
-        <Button
-            android:id="@+id/recstart"
-            android:layout_width="wrap_content"
+         <Button
+            android:id="@+id/btn_recStart"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Rec开始" />
+            android:layout_weight="1"
+            android:onClick="recStart"
+            android:text="开始录音" />
         <Button
             android:id="@+id/openrec"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="播放录音" />
 	        
-	</LinearLayout>	 
+	</LinearLayout>
+
+	 <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:layout_gravity="center"
+        android:onClick="getDeviceInfo"
+        android:text="获取设备信息" />
+	 <ScrollView
+        android:id="@+id/srollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@drawable/message_shape"
+        android:padding="@dimen/activity_vertical_margin" >
+
+        <TextView
+            android:id="@+id/tv_message"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </ScrollView>
 	
 </LinearLayout>

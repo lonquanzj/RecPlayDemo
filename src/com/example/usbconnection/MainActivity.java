@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
 	private DataUtil dataUtil;
 	private AlertDialog dialog;
 	private ScrollView srollview;
-	private Button btn_receivedMusicData;
+	private Button btn_recStart;
 	// private byte[][] sendData;
 
 	@SuppressLint("HandlerLeak")
@@ -53,7 +53,6 @@ public class MainActivity extends Activity {
 				break;
 			case UsbDevicesUtil.ACTION_USB_DEVICE_ATTACHED:
 				tv_message.append("\n设备已插入\n");
-				;
 				break;
 			case UsbDevicesUtil.ACTION_USB_DEVICE_DETACHED:
 				tv_message.append("\n设备已移除\n");
@@ -80,10 +79,10 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main_);
+		setContentView(R.layout.activity_main);
 		tv_message = (TextView) findViewById(R.id.tv_message);
 		btn_sendMusicData = (Button) findViewById(R.id.btn_sendMusicData);
-		btn_receivedMusicData = (Button) findViewById(R.id.btn_receivedMusicData);
+		btn_recStart = (Button) findViewById(R.id.btn_recStart);
 
 		usbDevicesUtil = new UsbDevicesUtil(this, handler);
 		
@@ -95,62 +94,8 @@ public class MainActivity extends Activity {
 	}
 
 
-/*	
-	 * 定时器 //zj
-	 
-	static Timer timer;
-	boolean isTimer = false;
-	int usedTime = 0;
-	public void StartTimer(View view){
-
-		if (!isTimer) {
-			usedTime = 0;
-			timer = new Timer(true);
-			((Button)view).setText("停止计时");
-			timer.schedule(new CountdownTimerTask(), 0, 100);
-			
-		} else {
-			timer.cancel();
-			timer = new Timer(true);
-			((Button)view).setText("开始计时");
-		}
-		isTimer=!isTimer;
-	}
-	private class CountdownTimerTask extends TimerTask{
-			
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-//				tv_message.append(usedTime + " s");
-				Message msg = new Message();
-				msg.what = usedTime;
-				handler.sendMessage(msg);
-				usedTime++;
-			}
-	}
-*/
 	
-	public void setHeader(View view){
-		tv_message.append("wav文件转换中...");
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				
-				if(dataUtil==null){
-					dataUtil = new DataUtil(MainActivity.this, handler);
-				}
-				dataUtil.copyWaveFile();
-				handler.sendEmptyMessage(10086);
-			}
-		}).start();
-	}
 
-
-	
-	      
-
-	
 	/**
 	 * 开始录音
 	 * @param view
@@ -162,7 +107,7 @@ public class MainActivity extends Activity {
 		}
 		if (!isRecoder) {
 			tv_message.append("\n开始" + "录音\n");
-			((Button)view).setText("停止录音");
+			((Button)view).setText("录音中……");
 			usbDevicesUtil.receiveMusicDataByBulk();
 			dataUtil = new DataUtil(MainActivity.this, handler);
 
@@ -190,12 +135,31 @@ public class MainActivity extends Activity {
 			tv_message.append("\n录音停止\n");
 			usbDevicesUtil.closeThread();
 			((Button)view).setText("开始录音");
+			setHeader();
 		}
 		isRecoder=!isRecoder;
 
 	}
  
-	
+	/*
+	 * 转换成wav文件
+	 */
+	public void setHeader(){
+		tv_message.append("wav文件转换中...");
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				if(dataUtil==null){
+					dataUtil = new DataUtil(MainActivity.this, handler);
+				}
+				dataUtil.copyWaveFile();
+				handler.sendEmptyMessage(10086);
+			}
+		}).start();
+	}
+
 
 	public void getDeviceInfo(View view) {
 		 usbDevicesUtil.showDeviceInfoDialog(usbDevicesUtil.getDeviceInfo());
