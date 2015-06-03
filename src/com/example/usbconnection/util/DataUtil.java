@@ -57,9 +57,6 @@ public class DataUtil {
 			}
 			file.createNewFile();
 
-			
-			
-			
 			outputStream = new FileOutputStream(file);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -226,8 +223,9 @@ public class DataUtil {
 	}
 	public void copyWaveFile(){
 		
+		int numcode = (int) ((Math.random() * 9 + 1) * 100000);
 		file2 = new File(Environment.getExternalStorageDirectory(),
-				"recoder.wav");
+				"recoder" + numcode+ ".wav");
 		
 		
 		if (file2.exists()) {

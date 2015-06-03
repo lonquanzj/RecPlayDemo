@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.usbconnection.util.DataUtil;
@@ -36,7 +37,6 @@ public class MainActivity extends Activity {
 	private DataUtil dataUtil;
 	private AlertDialog dialog;
 	private ScrollView srollview;
-	private Button btn_recStart;
 	// private byte[][] sendData;
 
 	@SuppressLint("HandlerLeak")
@@ -74,6 +74,22 @@ public class MainActivity extends Activity {
 	private Button btn_sendMusicData;
 	private AlertDialog.Builder builder;
 	ListView listView;
+	
+	Button btn_xiaoguo1;
+	Button btn_xiaoguo2;
+	Button btn_xiaoguo3;
+	Button btn_xiaoguo4;
+	Button btn_xiaoguo5;
+	Button btn_xiaoguo6;
+	
+	SeekBar sbar_effectStrength;
+	SeekBar sbar_microphoneVolume;
+	SeekBar sbar_headsetVolume;
+	
+	Button btn_shanbiSwitch;
+	Button btn_recStart;
+	Button btn_playMusic;
+	
 	public boolean isRecoder = false;
 
 	@Override
@@ -81,16 +97,29 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		tv_message = (TextView) findViewById(R.id.tv_message);
-		btn_sendMusicData = (Button) findViewById(R.id.btn_sendMusicData);
+		
+		btn_xiaoguo1 = (Button) findViewById(R.id.btn_xiaoguo1);
+		btn_xiaoguo2 = (Button) findViewById(R.id.btn_xiaoguo2);
+		btn_xiaoguo3 = (Button) findViewById(R.id.btn_xiaoguo3);
+		btn_xiaoguo4 = (Button) findViewById(R.id.btn_xiaoguo4);
+		btn_xiaoguo5 = (Button) findViewById(R.id.btn_xiaoguo5);
+		btn_xiaoguo6 = (Button) findViewById(R.id.btn_xiaoguo6);
 		btn_recStart = (Button) findViewById(R.id.btn_recStart);
-
+		btn_shanbiSwitch = (Button) findViewById(R.id.btn_shanbiSwitch);
+		btn_playMusic = (Button) findViewById(R.id.btn_playMusic);
+		
+		sbar_effectStrength = (SeekBar) findViewById(R.id.sbar_effectStrength);
+		sbar_effectStrength.setEnabled(false);
+		sbar_microphoneVolume = (SeekBar) findViewById(R.id.sbar_microphoneVolume);
+		sbar_microphoneVolume.setEnabled(false);
+		sbar_headsetVolume = (SeekBar) findViewById(R.id.sbar_headsetVolume);
+		
 		usbDevicesUtil = new UsbDevicesUtil(this, handler);
 		
 		srollview = (ScrollView) findViewById(R.id.srollview);
 
-		connectionDevice();
 
-		btn_sendMusicData.setEnabled(true);
+		connectionDevice();
 	}
 
 
@@ -100,14 +129,15 @@ public class MainActivity extends Activity {
 	 * 开始录音
 	 * @param view
 	 */
-	public void receivedMusicData(View view) {
+	public void recStart(View view) {
 		if (!usbDevicesUtil.isConnection) {
 			tv_message.setText("设备未正常连接");
 			return;
 		}
 		if (!isRecoder) {
 			tv_message.append("\n开始" + "录音\n");
-			((Button)view).setText("录音中……");
+			((Button)view).setText("停止录音");
+//			btn_recStart.setText("停止录音");
 			usbDevicesUtil.receiveMusicDataByBulk();
 			dataUtil = new DataUtil(MainActivity.this, handler);
 
@@ -132,7 +162,7 @@ public class MainActivity extends Activity {
 				}
 			}).start();
 		} else {
-			tv_message.append("\n录音停止\n");
+			tv_message.append("\n录音已停止\n");
 			usbDevicesUtil.closeThread();
 			((Button)view).setText("开始录音");
 			setHeader();
@@ -160,7 +190,40 @@ public class MainActivity extends Activity {
 		}).start();
 	}
 
+	/*
+	 * 放音模式
+	 */
+	public void playMode(View view){
+		btn_xiaoguo1.setEnabled(false);
+		btn_xiaoguo2.setEnabled(false);
+		btn_xiaoguo3.setEnabled(false);
+		btn_xiaoguo4.setEnabled(false);
+		btn_xiaoguo5.setEnabled(false);
+		btn_xiaoguo6.setEnabled(false);
+		
+		sbar_effectStrength.setEnabled(false);
+		sbar_microphoneVolume.setEnabled(false);
+		
+		btn_shanbiSwitch.setEnabled(false);
+	}
 
+	/*
+	 * 录音模式
+	 */
+	public void recMode(View view){
+		btn_xiaoguo1.setEnabled(true);
+		btn_xiaoguo2.setEnabled(true);
+		btn_xiaoguo3.setEnabled(true);
+		btn_xiaoguo4.setEnabled(true);
+		btn_xiaoguo5.setEnabled(true);
+		btn_xiaoguo6.setEnabled(true);
+		
+		sbar_effectStrength.setEnabled(true);
+		sbar_microphoneVolume.setEnabled(true);
+		
+		btn_shanbiSwitch.setEnabled(true);
+	}
+	
 	public void getDeviceInfo(View view) {
 		 usbDevicesUtil.showDeviceInfoDialog(usbDevicesUtil.getDeviceInfo());
 	}

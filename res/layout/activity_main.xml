@@ -13,17 +13,19 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/listensong"
+            android:id="@+id/btn_playMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.27"
+            android:onClick="playMode"
             android:text="音乐欣赏" />
 
         <Button
-            android:id="@+id/singsong"
+            android:id="@+id/recMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.22"
+            android:onClick="recMode"
             android:text="K歌模式" />
 
     </LinearLayout>
@@ -36,8 +38,8 @@
         <TextView
             android:id="@+id/xiaoguozhonglei"
             android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:text="效果种类" />
+            android:layout_height="80dp"
+            android:text="\n\n效果种类" />
    	    
    	    <LinearLayout
 	        android:layout_width="match_parent"
@@ -49,19 +51,22 @@
 		        android:layout_height="wrap_content"
 		        android:orientation="horizontal" >
 		        <Button
-		            android:id="@+id/xiaoguo1"
+		            android:id="@+id/btn_xiaoguo1"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
+            		android:enabled="false"
 		            android:text="效果1" />
 		        <Button
-		            android:id="@+id/xiaoguo2"
+		            android:id="@+id/btn_xiaoguo2"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
+            		android:enabled="false"
 		            android:text="效果2" />
 		        <Button
-		            android:id="@+id/xiaoguo3"
+		            android:id="@+id/btn_xiaoguo3"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
+            		android:enabled="false"
 		            android:text="效果3" />
 			</LinearLayout>
 		     
@@ -70,21 +75,24 @@
 		        android:layout_height="wrap_content"
 		        android:orientation="horizontal" >
 		        <Button
-		            android:id="@+id/xiaoguo4"
+		            android:id="@+id/btn_xiaoguo4"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
+            		android:enabled="false"
 		            android:text="效果4" />
 		
 		        <Button
-		            android:id="@+id/xiaoguo5"
+		            android:id="@+id/btn_xiaoguo5"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
+            		android:enabled="false"
 		            android:text="效果5" />
 		
 		        <Button
-		            android:id="@+id/xiaoguo6"
+		            android:id="@+id/btn_xiaoguo6"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
+            		android:enabled="false"
 		            android:text="效果6" />
 			</LinearLayout>
 		</LinearLayout>
@@ -101,13 +109,13 @@
 	        android:orientation="horizontal" >
         
         	<TextView
-	            android:id="@+id/xiaoguozhonglei"
+	            android:id="@+id/xiaoguoqiangdu"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:text="效果强度" />
 
         	<SeekBar
-        	    android:id="@+id/xiaoguoqiangdubar"
+        	    android:id="@+id/sbar_effectStrength"
         	    android:layout_width="match_parent"
         	    android:layout_height="wrap_content"
         	    android:layout_weight="1" />
@@ -120,13 +128,13 @@
 	        android:orientation="horizontal" >
         	
         	<TextView
-	            android:id="@+id/erjiyinliang"
+	            android:id="@+id/headsetVolume"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:text="耳机音量" />
 
         	<SeekBar
-        	    android:id="@+id/erjiyinliangbar"
+        	    android:id="@+id/sbar_headsetVolume"
         	    android:layout_width="match_parent"
         	    android:layout_height="wrap_content"
         	    android:layout_weight="1" />
@@ -139,13 +147,13 @@
 	        android:orientation="horizontal" >
 	        		
         	<TextView
-	            android:id="@+id/huatongyinliang"
+	            android:id="@+id/microphoneVolume"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:text="话筒音量" />
 
         	<SeekBar
-        	    android:id="@+id/huatongyinliangbar"
+        	    android:id="@+id/sbar_microphoneVolume"
         	    android:layout_width="match_parent"
         	    android:layout_height="wrap_content"
         	    android:layout_weight="1" />
@@ -159,9 +167,10 @@
 		 android:orientation="horizontal" >
 	   	    
 	     <Button
-            android:id="@+id/shanbiswitch"
+            android:id="@+id/btn_shanbiSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:text="闪避开关" />
          <Button
             android:id="@+id/btn_recStart"
@@ -171,7 +180,7 @@
             android:onClick="recStart"
             android:text="开始录音" />
         <Button
-            android:id="@+id/openrec"
+            android:id="@+id/btn_playMusic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="播放录音" />
