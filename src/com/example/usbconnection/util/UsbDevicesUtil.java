@@ -250,11 +250,11 @@ public class UsbDevicesUtil {
 					byte [] bTemp = new byte[4];
 					byte [] bTemp1 = {0, 0, 0, 0};
 					System.arraycopy(receiverMusicData, 0, bTemp, 0, 4);
-					if(!Arrays.equals(bTemp, bTemp1)){
+//					if(!Arrays.equals(bTemp, bTemp1)){
 						synchronized (UsbDevicesUtil.this) {
 		 					list.add(receiverMusicData);
 						}
-					}
+//					}
 				}
 			}
 		}).start();

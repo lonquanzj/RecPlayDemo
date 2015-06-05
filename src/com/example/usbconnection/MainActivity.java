@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.example.usbconnection.util.DataUtil;
@@ -108,10 +109,58 @@ public class MainActivity extends Activity {
 		btn_shanbiSwitch = (Button) findViewById(R.id.btn_shanbiSwitch);
 		btn_playMusic = (Button) findViewById(R.id.btn_playMusic);
 		
+		/*
+		 * 效果强度调节
+		 */
 		sbar_effectStrength = (SeekBar) findViewById(R.id.sbar_effectStrength);
 		sbar_effectStrength.setEnabled(false);
+		sbar_effectStrength.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar arg0) {
+				// TODO 自动生成的方法存根
+				
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar arg0) {
+				// TODO 自动生成的方法存根
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
+				// TODO 自动生成的方法存根
+				
+			}
+		});
+		
+		/*
+		 * 耳机音量调节
+		 */
 		sbar_microphoneVolume = (SeekBar) findViewById(R.id.sbar_microphoneVolume);
 		sbar_microphoneVolume.setEnabled(false);
+		sbar_microphoneVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+		
+			@Override
+			public void onStopTrackingTouch(SeekBar arg0) {
+				// TODO 自动生成的方法存根
+				
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar arg0) {
+				// TODO 自动生成的方法存根
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
+				// TODO 自动生成的方法存根
+				
+			}
+		});
+		
 		sbar_headsetVolume = (SeekBar) findViewById(R.id.sbar_headsetVolume);
 		
 		usbDevicesUtil = new UsbDevicesUtil(this, handler);
@@ -137,8 +186,6 @@ public class MainActivity extends Activity {
 		if (!isRecoder) {
 			tv_message.append("开始录音\n");
 			((Button)view).setText("停止录音");
-//			btn_recStart.setText("停止录音");
-			
 
 //			timer = new Timer(true);
 //			timer.schedule(new TimerTask() {
@@ -238,6 +285,7 @@ public class MainActivity extends Activity {
 		btn_shanbiSwitch.setEnabled(true);
 	}
 	
+	 
 	public void getDeviceInfo(View view) {
 		 usbDevicesUtil.showDeviceInfoDialog(usbDevicesUtil.getDeviceInfo());
 	}
