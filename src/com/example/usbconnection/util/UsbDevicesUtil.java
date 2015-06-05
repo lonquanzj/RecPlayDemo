@@ -250,11 +250,13 @@ public class UsbDevicesUtil {
 					byte [] bTemp = new byte[4];
 					byte [] bTemp1 = {0, 0, 0, 0};
 					System.arraycopy(receiverMusicData, 0, bTemp, 0, 4);
-//					if(!Arrays.equals(bTemp, bTemp1)){
+					if(!Arrays.equals(bTemp, bTemp1)){
+						//避免数据重复的问题，重新设置一个数组
+						byte[] receiverMusicData_temp = Arrays.copyOf(receiverMusicData, receiverMusicData.length);
 						synchronized (UsbDevicesUtil.this) {
-		 					list.add(receiverMusicData);
+		 					list.add(receiverMusicData_temp);
 						}
-//					}
+					}
 				}
 			}
 		}).start();
