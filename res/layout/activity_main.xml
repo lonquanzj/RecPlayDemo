@@ -118,6 +118,8 @@
         	    android:id="@+id/sbar_effectStrength"
         	    android:layout_width="match_parent"
         	    android:layout_height="wrap_content"
+        	    android:max="100"
+        	    android:progress="50"
         	    android:layout_weight="1" />
         	
         </LinearLayout>
@@ -137,6 +139,8 @@
         	    android:id="@+id/sbar_headsetVolume"
         	    android:layout_width="match_parent"
         	    android:layout_height="wrap_content"
+        	    android:max="100"
+        	    android:progress="50"
         	    android:layout_weight="1" />
 	        	
 	   </LinearLayout>   
@@ -156,6 +160,8 @@
         	    android:id="@+id/sbar_microphoneVolume"
         	    android:layout_width="match_parent"
         	    android:layout_height="wrap_content"
+        	    android:max="100"
+        	    android:progress="50"
         	    android:layout_weight="1" />
         </LinearLayout>
         

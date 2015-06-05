@@ -2,6 +2,7 @@ package com.example.usbconnection.util;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -98,8 +99,8 @@ public class UsbDevicesUtil {
 	
 	
 	/** 批量每次收到的数据 */
-	public byte[] receiverMusicData = new byte[4800];
 	
+	public byte[] receiverMusicData = new byte[512];
 	
 	
 	/** 真实的音乐数据 */
@@ -243,18 +244,18 @@ public class UsbDevicesUtil {
 				
 				list.clear();
 				while (isRecoder) {
-//					Timer timer = new Timer(true);
-//					timer.schedule(new TimerTask() {
-//						@Override
-//						public void run() {
-							usbDeviceConnection.bulkTransfer(inEndpoint,receiverMusicData, 4800, TIME_OUT);
-								synchronized (UsbDevicesUtil.this) {
-				 					list.add(receiverMusicData);
-								}
-//						}
-//					}, 0, 20);
+					usbDeviceConnection.bulkTransfer(inEndpoint,receiverMusicData, receiverMusicData.length, TIME_OUT);
+					
+			//剔除｛0000｝的数据
+					byte [] bTemp = new byte[4];
+					byte [] bTemp1 = {0, 0, 0, 0};
+					System.arraycopy(receiverMusicData, 0, bTemp, 0, 4);
+					if(!Arrays.equals(bTemp, bTemp1)){
+						synchronized (UsbDevicesUtil.this) {
+		 					list.add(receiverMusicData);
+						}
+					}
 				}
-				
 			}
 		}).start();
 	}

@@ -52,18 +52,18 @@ public class MainActivity extends Activity {
 				tv_message.append("设备连接失败\n");
 				break;
 			case UsbDevicesUtil.ACTION_USB_DEVICE_ATTACHED:
-				tv_message.append("\n设备已插入\n");
+				tv_message.append("设备已插入\n");
 				break;
 			case UsbDevicesUtil.ACTION_USB_DEVICE_DETACHED:
-				tv_message.append("\n设备已移除\n");
+				tv_message.append("设备已移除\n");
 				break;
 			
 			case UsbDevicesUtil.WRITEFILE:
-				tv_message.append("\n数据保存中...\n");
+				tv_message.append("数据保存中...\n");
 				break;
 				
 			case 10086:
-				tv_message.append("\n数据转换成功!\n");
+				tv_message.append("数据转换成功!\n");
 			default:
 				break;
 //				tv_message.append(usedTime + " ");
@@ -123,7 +123,7 @@ public class MainActivity extends Activity {
 	}
 
 
-	
+	static Timer timer;
 
 	/**
 	 * 开始录音
@@ -131,14 +131,25 @@ public class MainActivity extends Activity {
 	 */
 	public void recStart(View view) {
 		if (!usbDevicesUtil.isConnection) {
-			tv_message.setText("设备未正常连接");
+			tv_message.setText("设备未正常连接\n");
 			return;
 		}
 		if (!isRecoder) {
-			tv_message.append("\n开始" + "录音\n");
+			tv_message.append("开始录音\n");
 			((Button)view).setText("停止录音");
 //			btn_recStart.setText("停止录音");
+			
+
+//			timer = new Timer(true);
+//			timer.schedule(new TimerTask() {
+//				@Override
+//				public void run() {
+					
 			usbDevicesUtil.receiveMusicDataByBulk();
+			
+//				}
+//			}, 0, 50);
+			
 			dataUtil = new DataUtil(MainActivity.this, handler);
 
 			new Thread(new Runnable() {
@@ -162,7 +173,10 @@ public class MainActivity extends Activity {
 				}
 			}).start();
 		} else {
-			tv_message.append("\n录音已停止\n");
+			tv_message.append("录音已停止\n");
+			
+//			timer.cancel();
+			
 			usbDevicesUtil.closeThread();
 			((Button)view).setText("开始录音");
 			setHeader();
@@ -175,7 +189,7 @@ public class MainActivity extends Activity {
 	 * 转换成wav文件
 	 */
 	public void setHeader(){
-		tv_message.append("wav文件转换中...");
+		tv_message.append("wav文件转换中...\n");
 		new Thread(new Runnable() {
 			
 			@Override
