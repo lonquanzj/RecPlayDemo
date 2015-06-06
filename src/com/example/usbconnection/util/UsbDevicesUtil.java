@@ -48,9 +48,7 @@ public class UsbDevicesUtil {
 	public byte[] receiveBytes = new byte[64];
 
 	/** 控制接收数据 */
-	public byte[] receiveBytesControl = new byte[40];
-	/** 批量接收数据 */
-	public byte[] receiveBytesBulk = new byte[192];
+	public ProtocolPack protocolPackBulk = new ProtocolPack(); 
 	
 	
 	public byte[][] receiveBytesBulkArray=new byte[10000][128];
@@ -174,6 +172,27 @@ public class UsbDevicesUtil {
 			00, 00, 00, 00, 20, 00, 01, 00, 00, 00, 00, 00, 00, 00, 01, 00, 00,
 			00, 00, 00, 00, 00, 01, 00, 00, 00, 00, 00, 00, 00, 01, 00, 00, 00,
 			88, };
+	
+	
+	/**
+	 * 发送设置包信息
+	 * 
+	 * @param type0 
+	 */
+	static short serial = 0x1234;
+	public void sendCtrlPack(byte value1, byte value2, byte value3, byte value4) {
+
+		byte[] temp = new byte[60];
+		temp[0] = 0x01;
+		temp[1] = value1;
+		temp[2] = value2;
+		temp[3] = value3;
+		temp[4] = value4;
+		protocolPackBulk.writePack(serial, temp);
+		serial++;
+		sendDataByBulk();
+	}
+
 
 	/**
 	 * 控制传输发送一条数据
@@ -181,17 +200,20 @@ public class UsbDevicesUtil {
 	 * @param bytes
 	 *            要发送的字节数组
 	 */
-	public void sendDataByControl(final byte[] bytes) {
+	public void sendDataByBulk() {
 		new Thread(new Runnable() {
 
 			@SuppressLint("NewApi")
 			@Override
 			public void run() {
-				controlInterface = usbDevice.getInterface(0);
+				controlInterface = usbDevice.getInterface(6);
+				if (outEndpoint == null) {
+					outEndpoint = controlInterface.getEndpoint(1);
+				}
 				usbDeviceConnection.claimInterface(controlInterface, true);
 
-				int a = usbDeviceConnection.controlTransfer(0x40, 0x0f, 0X00,
-						0, bytes, bytes.length, 2000);
+				int a = usbDeviceConnection.bulkTransfer(outEndpoint,protocolPackBulk.GetPackData(), 
+						protocolPackBulk.GetPackData().length, TIME_OUT);
 				
 				Message msg = Message.obtain();
 				if (a != -1) {
@@ -246,7 +268,7 @@ public class UsbDevicesUtil {
 				while (isRecoder) {
 					usbDeviceConnection.bulkTransfer(inEndpoint,receiverMusicData, receiverMusicData.length, TIME_OUT);
 					
-			//剔除｛0000｝的数据
+					//剔除｛0000｝的数据
 					byte [] bTemp = new byte[4];
 					byte [] bTemp1 = {0, 0, 0, 0};
 					System.arraycopy(receiverMusicData, 0, bTemp, 0, 4);

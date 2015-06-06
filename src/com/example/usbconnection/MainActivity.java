@@ -63,6 +63,8 @@ public class MainActivity extends Activity {
 				tv_message.append("数据保存中...\n");
 				break;
 				
+			case UsbDevicesUtil.SENDDATA_CONTROL_SUCCESS:
+				tv_message.append("控制传输成功\n");
 			case 10086:
 				tv_message.append("数据转换成功!\n");
 			default:
@@ -97,6 +99,9 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		usbDevicesUtil = new UsbDevicesUtil(this, handler);
+		
 		tv_message = (TextView) findViewById(R.id.tv_message);
 		
 		btn_xiaoguo1 = (Button) findViewById(R.id.btn_xiaoguo1);
@@ -136,7 +141,7 @@ public class MainActivity extends Activity {
 		});
 		
 		/*
-		 * 耳机音量调节
+		 * 话筒音量调节
 		 */
 		sbar_microphoneVolume = (SeekBar) findViewById(R.id.sbar_microphoneVolume);
 		sbar_microphoneVolume.setEnabled(false);
@@ -157,13 +162,11 @@ public class MainActivity extends Activity {
 			@Override
 			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
 				// TODO 自动生成的方法存根
-				
+				usbDevicesUtil.sendCtrlPack((byte)4, (byte)5, (byte)6, (byte)arg1);
 			}
 		});
 		
 		sbar_headsetVolume = (SeekBar) findViewById(R.id.sbar_headsetVolume);
-		
-		usbDevicesUtil = new UsbDevicesUtil(this, handler);
 		
 		srollview = (ScrollView) findViewById(R.id.srollview);
 
