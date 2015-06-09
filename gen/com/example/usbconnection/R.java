@@ -26,28 +26,30 @@ public final class R {
         public static final int message_shape=0x7f020002;
     }
     public static final class id {
-        public static final int action_settings=0x7f090015;
+        public static final int action_settings=0x7f090017;
         public static final int btn_playMode=0x7f090000;
-        public static final int btn_playMusic=0x7f090011;
-        public static final int btn_recStart=0x7f090010;
-        public static final int btn_shanbiSwitch=0x7f09000f;
-        public static final int btn_xiaoguo1=0x7f090003;
-        public static final int btn_xiaoguo2=0x7f090004;
-        public static final int btn_xiaoguo3=0x7f090005;
-        public static final int btn_xiaoguo4=0x7f090006;
-        public static final int btn_xiaoguo5=0x7f090007;
-        public static final int btn_xiaoguo6=0x7f090008;
-        public static final int headsetVolume=0x7f09000b;
-        public static final int listview=0x7f090014;
-        public static final int microphoneVolume=0x7f09000d;
+        public static final int btn_playMusic=0x7f090013;
+        public static final int btn_recStart=0x7f090012;
+        public static final int btn_shanbiSwitch=0x7f090011;
+        public static final int effectCategory=0x7f090002;
+        public static final int effectStrength=0x7f09000b;
+        public static final int headsetVolume=0x7f09000d;
+        public static final int listview=0x7f090016;
+        public static final int microphoneVolume=0x7f09000f;
+        public static final int rb_xiaoguo1=0x7f090004;
+        public static final int rb_xiaoguo2=0x7f090005;
+        public static final int rb_xiaoguo3=0x7f090006;
+        public static final int rb_xiaoguo4=0x7f090008;
+        public static final int rb_xiaoguo5=0x7f090009;
+        public static final int rb_xiaoguo6=0x7f09000a;
         public static final int recMode=0x7f090001;
-        public static final int sbar_effectStrength=0x7f09000a;
-        public static final int sbar_headsetVolume=0x7f09000c;
-        public static final int sbar_microphoneVolume=0x7f09000e;
-        public static final int srollview=0x7f090012;
-        public static final int tv_message=0x7f090013;
-        public static final int xiaoguoqiangdu=0x7f090009;
-        public static final int xiaoguozhonglei=0x7f090002;
+        public static final int rg_first=0x7f090003;
+        public static final int rg_second=0x7f090007;
+        public static final int sbar_effectStrength=0x7f09000c;
+        public static final int sbar_headsetVolume=0x7f09000e;
+        public static final int sbar_microphoneVolume=0x7f090010;
+        public static final int srollview=0x7f090014;
+        public static final int tv_message=0x7f090015;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;

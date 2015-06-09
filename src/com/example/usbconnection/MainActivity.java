@@ -12,6 +12,9 @@ import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -19,6 +22,7 @@ import android.widget.TextView;
 
 import com.example.usbconnection.util.DataUtil;
 import com.example.usbconnection.util.UsbDevicesUtil;
+import com.example.usbconnection.util.StaticFinal;
 
 public class MainActivity extends Activity {
 	// private static final String TAG = "MainActivity";
@@ -33,8 +37,6 @@ public class MainActivity extends Activity {
 
 	private int index = 0;
 	
-
-
 	private DataUtil dataUtil;
 	private AlertDialog dialog;
 	private ScrollView srollview;
@@ -46,24 +48,24 @@ public class MainActivity extends Activity {
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
-			case UsbDevicesUtil.DEVICE_CONNECTION_SUCCESS:
+			case StaticFinal.DEVICE_CONNECTION_SUCCESS:
 				tv_message.setText("设备连接成功\n");
 				break;
-			case UsbDevicesUtil.DEVICE_CONNECTION_FAIL:
+			case StaticFinal.DEVICE_CONNECTION_FAIL:
 				tv_message.append("设备连接失败\n");
 				break;
-			case UsbDevicesUtil.ACTION_USB_DEVICE_ATTACHED:
+			case StaticFinal.ACTION_USB_DEVICE_ATTACHED:
 				tv_message.append("设备已插入\n");
 				break;
-			case UsbDevicesUtil.ACTION_USB_DEVICE_DETACHED:
+			case StaticFinal.ACTION_USB_DEVICE_DETACHED:
 				tv_message.append("设备已移除\n");
 				break;
 			
-			case UsbDevicesUtil.WRITEFILE:
+			case StaticFinal.WRITEFILE:
 				tv_message.append("数据保存中...\n");
 				break;
 				
-			case UsbDevicesUtil.SENDDATA_CONTROL_SUCCESS:
+			case StaticFinal.SENDDATA_CONTROL_SUCCESS:
 				tv_message.append("控制传输成功\n");
 			case 10086:
 				tv_message.append("数据转换成功!\n");
@@ -78,12 +80,12 @@ public class MainActivity extends Activity {
 	private AlertDialog.Builder builder;
 	ListView listView;
 	
-	Button btn_xiaoguo1;
-	Button btn_xiaoguo2;
-	Button btn_xiaoguo3;
-	Button btn_xiaoguo4;
-	Button btn_xiaoguo5;
-	Button btn_xiaoguo6;
+	RadioButton rb_xiaoguo1;
+	RadioButton rb_xiaoguo2;
+	RadioButton rb_xiaoguo3;
+	RadioButton rb_xiaoguo4;
+	RadioButton rb_xiaoguo5;
+	RadioButton rb_xiaoguo6;
 	
 	SeekBar sbar_effectStrength;
 	SeekBar sbar_microphoneVolume;
@@ -104,16 +106,77 @@ public class MainActivity extends Activity {
 		
 		tv_message = (TextView) findViewById(R.id.tv_message);
 		
-		btn_xiaoguo1 = (Button) findViewById(R.id.btn_xiaoguo1);
-		btn_xiaoguo2 = (Button) findViewById(R.id.btn_xiaoguo2);
-		btn_xiaoguo3 = (Button) findViewById(R.id.btn_xiaoguo3);
-		btn_xiaoguo4 = (Button) findViewById(R.id.btn_xiaoguo4);
-		btn_xiaoguo5 = (Button) findViewById(R.id.btn_xiaoguo5);
-		btn_xiaoguo6 = (Button) findViewById(R.id.btn_xiaoguo6);
 		btn_recStart = (Button) findViewById(R.id.btn_recStart);
 		btn_shanbiSwitch = (Button) findViewById(R.id.btn_shanbiSwitch);
 		btn_playMusic = (Button) findViewById(R.id.btn_playMusic);
 		
+		initRadioButton();
+		initSeekBar();
+		
+		srollview = (ScrollView) findViewById(R.id.srollview);
+
+		connectionDevice();
+	}
+	
+	public void initRadioButton(){
+		rb_xiaoguo1 = (RadioButton) findViewById(R.id.rb_xiaoguo1);
+		rb_xiaoguo2 = (RadioButton) findViewById(R.id.rb_xiaoguo2);
+		rb_xiaoguo3 = (RadioButton) findViewById(R.id.rb_xiaoguo3);
+		rb_xiaoguo4 = (RadioButton) findViewById(R.id.rb_xiaoguo4);
+		rb_xiaoguo5 = (RadioButton) findViewById(R.id.rb_xiaoguo5);
+		rb_xiaoguo6 = (RadioButton) findViewById(R.id.rb_xiaoguo6);
+		
+		final RadioGroup[] radioGroup = new RadioGroup[2];
+		radioGroup[0] = (RadioGroup) findViewById(R.id.rg_first);
+		radioGroup[1] = (RadioGroup)/* lessonSelectView.*/findViewById(R.id.rg_second);
+		
+		for (int i = 0; i < 2; i++) {
+			radioGroup[i].setOnCheckedChangeListener(new OnCheckedChangeListener() {
+						public void onCheckedChanged(RadioGroup group,
+								int checkedId) {
+							// 判断是否有字按钮被选中(checked)
+							if (gainedSelectedValue(group, checkedId)) {
+								group.requestFocus();
+								gainedSelectedValue(group, checkedId);
+							}
+						}
+					});
+
+			radioGroup[i].setOnFocusChangeListener(new View.OnFocusChangeListener() {
+						public void onFocusChange(View v, boolean hasFocus) {
+							if (hasFocus) {
+								RadioGroup group = (RadioGroup) v;
+								for (int j = 0; j < 3; j++) {
+									if (!radioGroup[j].equals(group)) {
+										if (radioGroup[j].getCheckedRadioButtonId() != -1) {
+											radioGroup[j].clearCheck();
+										}
+									}
+								}
+							}
+						}
+					});
+		}
+	}
+	
+	/**
+	 * 得到RadioGroup中选择的值(点选了哪个RadioButton) 判断RadioGroup中是否有RadioButton被checked
+	 * 
+	 * @param radioGroup
+	 * @param checkedId
+	 */
+	private boolean gainedSelectedValue(RadioGroup radioGroup, int checkedId) {
+		for (int i = 0; i < radioGroup.getChildCount(); i++) {
+			RadioButton btn = (RadioButton) radioGroup.getChildAt(i);
+			if (btn.getId() == checkedId) {
+				String selectedValue = (String) btn.getText();
+				return btn.isChecked();
+			}
+		}
+		return false;
+	}
+
+	public void initSeekBar(){
 		/*
 		 * 效果强度调节
 		 */
@@ -136,7 +199,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
 				// TODO 自动生成的方法存根
-				
+				usbDevicesUtil.sendCtrlPack(StaticFinal.EFFECT_STRENGTH, (byte) arg1);
 			}
 		});
 		
@@ -162,21 +225,34 @@ public class MainActivity extends Activity {
 			@Override
 			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
 				// TODO 自动生成的方法存根
-				usbDevicesUtil.sendCtrlPack((byte)4, (byte)5, (byte)6, (byte)arg1);
+				usbDevicesUtil.sendCtrlPack(StaticFinal.MICROPHONE_VOLUME, (byte)arg1);
 			}
 		});
 		
 		sbar_headsetVolume = (SeekBar) findViewById(R.id.sbar_headsetVolume);
+		sbar_headsetVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 		
-		srollview = (ScrollView) findViewById(R.id.srollview);
-
-
-		connectionDevice();
+			@Override
+			public void onStopTrackingTouch(SeekBar arg0) {
+				// TODO 自动生成的方法存根
+				
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar arg0) {
+				// TODO 自动生成的方法存根
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
+				// TODO 自动生成的方法存根
+				usbDevicesUtil.sendCtrlPack(StaticFinal.HEADSET_VOLUME, (byte)arg1);
+			}
+		});
 	}
 
-
-	static Timer timer;
-
+//	static Timer timer;
 	/**
 	 * 开始录音
 	 * @param view
@@ -258,12 +334,12 @@ public class MainActivity extends Activity {
 	 * 放音模式
 	 */
 	public void playMode(View view){
-		btn_xiaoguo1.setEnabled(false);
-		btn_xiaoguo2.setEnabled(false);
-		btn_xiaoguo3.setEnabled(false);
-		btn_xiaoguo4.setEnabled(false);
-		btn_xiaoguo5.setEnabled(false);
-		btn_xiaoguo6.setEnabled(false);
+		rb_xiaoguo1.setEnabled(false);
+		rb_xiaoguo2.setEnabled(false);
+		rb_xiaoguo3.setEnabled(false);
+		rb_xiaoguo4.setEnabled(false);
+		rb_xiaoguo5.setEnabled(false);
+		rb_xiaoguo6.setEnabled(false);
 		
 		sbar_effectStrength.setEnabled(false);
 		sbar_microphoneVolume.setEnabled(false);
@@ -275,12 +351,12 @@ public class MainActivity extends Activity {
 	 * 录音模式
 	 */
 	public void recMode(View view){
-		btn_xiaoguo1.setEnabled(true);
-		btn_xiaoguo2.setEnabled(true);
-		btn_xiaoguo3.setEnabled(true);
-		btn_xiaoguo4.setEnabled(true);
-		btn_xiaoguo5.setEnabled(true);
-		btn_xiaoguo6.setEnabled(true);
+		rb_xiaoguo1.setEnabled(true);
+		rb_xiaoguo2.setEnabled(true);
+		rb_xiaoguo3.setEnabled(true);
+		rb_xiaoguo4.setEnabled(true);
+		rb_xiaoguo5.setEnabled(true);
+		rb_xiaoguo6.setEnabled(true);
 		
 		sbar_effectStrength.setEnabled(true);
 		sbar_microphoneVolume.setEnabled(true);

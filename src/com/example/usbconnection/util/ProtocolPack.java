@@ -32,7 +32,7 @@ public class ProtocolPack {
 		protocolPack[63] = temp;
 	}
 	
-	//写数据
+	//写数据 待商榷
 	public void writeData(byte[] data){
 		System.arraycopy(data, 0, protocolPack, 4, data.length);
 	}

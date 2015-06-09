@@ -6,8 +6,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -23,13 +21,14 @@ import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
-import android.hardware.usb.UsbRequest;
 import android.os.Handler;
 import android.os.Message;
 
 @SuppressLint("NewApi")
 public class UsbDevicesUtil {
 	private Context mContext;
+	private Handler handler;
+	
 	private UsbManager usbManager;
 	private UsbDeviceConnection usbDeviceConnection;
 	private UsbDevice usbDevice;
@@ -37,73 +36,34 @@ public class UsbDevicesUtil {
 	private UsbInterface bulkInterface;
 	/** 控制传输接口 */
 	private UsbInterface controlInterface;
-
+	
 	private UsbEndpoint inEndpoint;
 	private UsbEndpoint outEndpoint;
-	private UsbEndpoint inEndpoint2;
 
 	private PendingIntent intent;
 	public boolean isConnection = false;
 
-	public byte[] receiveBytes = new byte[64];
+	/** 批量每次从声卡收到的录音数据 */
+	public byte[] receiveMusicData = new byte[512];
+	/** 保存批量每次从声卡收到的录音数据 */
+	public List<byte[]> reciveMusicDataList = new ArrayList<byte[]>();
 
-	/** 控制接收数据 */
-	public ProtocolPack protocolPackBulk = new ProtocolPack(); 
+	/** 控制发送数据给声卡 */
+	public ProtocolPack sendProtocolPackData = new ProtocolPack(); 
+	/** 控制发送数据给声卡 表*/
+//	public List<byte[]> sendProtocolPackDataList = new ArrayList<byte[]>();
+	/** 从声卡控制接收数据 */
+//	public byte[] receiveProtocolPackData = new byte[64];
+	/** 从声卡控制接收数据 表 */
+//	public byte[][] receiveProtocolPackDataArray=new byte[10000][128];
 	
+	/**批量传输接收数据 是否一直处于接收 */
+	public boolean isRecoder=false;
 	
-	public byte[][] receiveBytesBulkArray=new byte[10000][128];
-
 	public static final int DATA_LENGTH = 64;
-
 	private final static String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
-	/** 数据发送成功 */
-	public final static int SENDDATA_SUCCESS = 1;
-	/** 数据发送失败 */
-	public final static int SENDDATA_FAIL = 2;
-
-	/** 收到数据 */
-	public final static int RECEIVERDATA_SUCCESS = 3;
-
-	public final static int RECEIVERDATA_FAIL = 4;
-
-	public final static int SENDDATA_RECEIVERDATA_SUCCESS = 5;
-
-	public final static int COMPLETED = 6;
-
-	public final static int RECEIVEDATA_BULK_SUCCESS = 7;
-
-	public final static int RECEIVEDATA_CONTROL_SUCCESS = 8;
-
-	public final static int SENDDATA_BULK_SUCCESS = 9;
-	public final static int SENDDATA_CONTROL_SUCCESS = 10;
-
-	public final static int SEND_MUSICDATA_SUCCESS = 7777;
-
-	public final static int DEVICE_CONNECTION_SUCCESS = 77;
-	public final static int DEVICE_CONNECTION_FAIL = 78;
-	public final static int ACTION_USB_DEVICE_ATTACHED = 79;
-	public final static int ACTION_USB_DEVICE_DETACHED = 80;
-
-	public final static int TIME_OUT = 5000;
-
-	/** 写入音乐文件完毕 */
-	public final static int WRITEFILE_SUCCESS = 5001;
 	protected static final String TAG = UsbDevicesUtil.class.getSimpleName();
-	public static final int WRITEFILE = 5002;
 	
-	private Handler handler;
-	public byte[][] senddata;
-
-	
-	
-	/** 批量每次收到的数据 */
-	
-	public byte[] receiverMusicData = new byte[512];
-	
-	
-	/** 真实的音乐数据 */
-	public byte[] receiverMusicData2 = new byte[127];
-
 	public UsbDevicesUtil(Handler handler) {
 		this.handler = handler;
 	}
@@ -115,6 +75,9 @@ public class UsbDevicesUtil {
 		registerReceiver();
 	}
 
+	
+	/********************************连接USB设备***************************************************************************/	
+	
 	/**
 	 * 获取一个设备
 	 */
@@ -127,26 +90,7 @@ public class UsbDevicesUtil {
 			usbDevice = iterator.next();
 		}
 	}
-	/**
-	 * 
-	 * @return 若有数据则返回接收到的录音数据 ,没有数据则返回null
-	 */
-	public List<byte[]> getRecoderData() {
-		
 
-			if (list.size() > 0) {
-				List<byte[]> tempList = new ArrayList<byte[]>();
-				synchronized (UsbDevicesUtil.this) {
-					tempList.addAll(list);
-					list.clear();
-				}
-				return tempList;
-			}
-			return null;
-
-//		}
-
-	}
 	/**
 	 * 获取权限,如果获取成功则连接设备.否则连接失败.
 	 */
@@ -166,148 +110,6 @@ public class UsbDevicesUtil {
 		}
 	}
 
-	// public byte[] bytes = new byte[63];
-	public byte[] writedata = { 88, 00, 01, 00, 23, 20, 02, 00, 30, 00, 00, 01,
-			00, 00, 00, 00, 00, 00, 00, 01, 00, 00, 00, 00, 00, 00, 00, 01, 00,
-			00, 00, 00, 00, 20, 00, 01, 00, 00, 00, 00, 00, 00, 00, 01, 00, 00,
-			00, 00, 00, 00, 00, 01, 00, 00, 00, 00, 00, 00, 00, 01, 00, 00, 00,
-			88, };
-	
-	
-	/**
-	 * 发送设置包信息
-	 * 
-	 * @param type0 
-	 */
-	static short serial = 0x1234;
-	public void sendCtrlPack(byte value1, byte value2, byte value3, byte value4) {
-
-		byte[] temp = new byte[60];
-		temp[0] = 0x01;
-		temp[1] = value1;
-		temp[2] = value2;
-		temp[3] = value3;
-		temp[4] = value4;
-		protocolPackBulk.writePack(serial, temp);
-		serial++;
-		sendDataByBulk();
-	}
-
-
-	/**
-	 * 控制传输发送一条数据
-	 * 
-	 * @param bytes
-	 *            要发送的字节数组
-	 */
-	public void sendDataByBulk() {
-		new Thread(new Runnable() {
-
-			@SuppressLint("NewApi")
-			@Override
-			public void run() {
-				controlInterface = usbDevice.getInterface(6);
-				if (outEndpoint == null) {
-					outEndpoint = controlInterface.getEndpoint(1);
-				}
-				usbDeviceConnection.claimInterface(controlInterface, true);
-
-				int a = usbDeviceConnection.bulkTransfer(outEndpoint,protocolPackBulk.GetPackData(), 
-						protocolPackBulk.GetPackData().length, TIME_OUT);
-				
-				Message msg = Message.obtain();
-				if (a != -1) {
-					msg.what = SENDDATA_CONTROL_SUCCESS;
-				} else {
-					msg.what = SENDDATA_FAIL;
-				}
-
-				handler.sendMessage(msg);
-			}
-		}).start();
-
-	}
-
-
-	byte speed;
-
-	public List<byte[]> list = new ArrayList<byte[]>();
-	public int a=0;
-
-	int count = 0;
-
-	/**
-	 * 批量传输接收数据 是否一直处于接收
-	 */
-	
-	public boolean isRecoder=false;
-	/**
-	 * 读取录音数据
-	 */
-	public void receiveMusicDataByBulk() {
-		
-		isRecoder=true;
-		new Thread(new Runnable() {
-			
-
-			@Override
-			public void run() {
-
-				/** 64位的2维数组 */
-				if (controlInterface != null) {
-					usbDeviceConnection.releaseInterface(controlInterface);
-				}
-				bulkInterface = usbDevice.getInterface(5);
-
-				if (inEndpoint == null) {
-					inEndpoint = bulkInterface.getEndpoint(0);
-				}
-				usbDeviceConnection.claimInterface(bulkInterface, true);
-				
-				list.clear();
-				while (isRecoder) {
-					usbDeviceConnection.bulkTransfer(inEndpoint,receiverMusicData, receiverMusicData.length, TIME_OUT);
-					
-					//剔除｛0000｝的数据
-					byte [] bTemp = new byte[4];
-					byte [] bTemp1 = {0, 0, 0, 0};
-					System.arraycopy(receiverMusicData, 0, bTemp, 0, 4);
-					if(!Arrays.equals(bTemp, bTemp1)){
-						//避免数据重复的问题，重新设置一个数组
-						byte[] receiverMusicData_temp = Arrays.copyOf(receiverMusicData, receiverMusicData.length);
-						synchronized (UsbDevicesUtil.this) {
-		 					list.add(receiverMusicData_temp);
-						}
-					}
-				}
-			}
-		}).start();
-	}
-	
-	
-	int index = 0;
-	
-	public  boolean isRun=true;
-	public void setIsRun(boolean isRun){
-		this.isRun=isRun;
-	}
-	/**
-	 *  通过批量发送接收数据
-	 * @param bytes
-	 */
-	public void closeThread(){
-//		this.isRun=false;
-		this.isRecoder=false;
-	}
-	public void startThread(){
-		this.isRecoder=true;
-	}
-	
-	
-	
-
-
-
 
 	/**
 	 * 连接设备,连接成功或失败则发送成功或失败消息
@@ -318,12 +120,63 @@ public class UsbDevicesUtil {
 		usbDeviceConnection = usbManager.openDevice(usbDevice);
 		if (usbDeviceConnection != null) {
 			isConnection = true;
-			handler.sendEmptyMessage(DEVICE_CONNECTION_SUCCESS);
+			handler.sendEmptyMessage(StaticFinal.DEVICE_CONNECTION_SUCCESS);
 		} else {
 			isConnection = false;
-			handler.sendEmptyMessage(DEVICE_CONNECTION_FAIL);
+			handler.sendEmptyMessage(StaticFinal.DEVICE_CONNECTION_FAIL);
 		}
 
+	}
+	
+	/**
+	 * 注册广播
+	 */
+	private void registerReceiver() {
+		intent = PendingIntent.getBroadcast(mContext, 0, new Intent(
+				ACTION_USB_PERMISSION), 0);
+		IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
+		filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+		filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+		mContext.registerReceiver(mUsbReceiver, filter);
+	}
+
+	public void unregisterReceiver() {
+		mContext.unregisterReceiver(mUsbReceiver);
+	}
+
+	private BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+
+		@SuppressLint("NewApi")
+		@Override
+		public void onReceive(Context arg0, Intent intent) {
+			String actionString = intent.getAction();
+			if (actionString.equals(ACTION_USB_PERMISSION)) {
+				connectionUsbDevice();
+			} else if (actionString
+					.equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
+				handler.sendEmptyMessage(StaticFinal.ACTION_USB_DEVICE_ATTACHED);
+			} else if (actionString
+					.equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
+				handler.sendEmptyMessage(StaticFinal.ACTION_USB_DEVICE_DETACHED);
+				closeThread();
+			}
+
+		}
+
+	};
+
+	public  boolean isRun=true;
+	public void setIsRun(boolean isRun){
+		this.isRun=isRun;
+	}
+
+	
+	public void closeThread(){
+//		this.isRun=false;
+		this.isRecoder=false;
+	}
+	public void startThread(){
+		this.isRecoder=true;
 	}
 
 	/**
@@ -410,42 +263,129 @@ public class UsbDevicesUtil {
 		return new String(stringBuffer);
 
 	}
+	
+	/********************************传输数据***************************************************************************/
+//	public class UsbTransData {
+		/**
+		 * 
+		 * @return 若有数据则返回接收到的录音数据 ,没有数据则返回null
+		 */
+		public List<byte[]> getRecoderData() {
+			
 
-	/**
-	 * 注册广播
-	 */
-	private void registerReceiver() {
-		intent = PendingIntent.getBroadcast(mContext, 0, new Intent(
-				ACTION_USB_PERMISSION), 0);
-		IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
-		filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-		filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-		mContext.registerReceiver(mUsbReceiver, filter);
-	}
+				if (reciveMusicDataList.size() > 0) {
+					List<byte[]> tempList = new ArrayList<byte[]>();
+					synchronized (UsbDevicesUtil.this) {
+						tempList.addAll(reciveMusicDataList);
+						reciveMusicDataList.clear();
+					}
+					return tempList;
+				}
+				return null;
 
-	public void unregisterReceiver() {
-		mContext.unregisterReceiver(mUsbReceiver);
-	}
-
-	private BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
-
-		@SuppressLint("NewApi")
-		@Override
-		public void onReceive(Context arg0, Intent intent) {
-			String actionString = intent.getAction();
-			if (actionString.equals(ACTION_USB_PERMISSION)) {
-				connectionUsbDevice();
-			} else if (actionString
-					.equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
-				handler.sendEmptyMessage(ACTION_USB_DEVICE_ATTACHED);
-			} else if (actionString
-					.equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
-				handler.sendEmptyMessage(ACTION_USB_DEVICE_DETACHED);
-				closeThread();
-			}
+//			}
 
 		}
+		
+		/**
+		 * 发送设置包信息
+		 * 
+		 * @param1 num 包代号
+		 * @param2 data 包数据
+		 */
+		short serial = 0x1234;
+		public void sendCtrlPack(byte num, byte data) {
 
-	};
+			byte[] temp = new byte[60];
+			temp[0] = 0x01;
+			temp[1] = num;
+			temp[2] = data;
+			sendProtocolPackData.writePack(serial, temp);
+			serial++;
+			sendDataByBulk(sendProtocolPackData.GetPackData());
+		}
 
+
+		/**
+		 * 控制传输发送一条数据
+		 * 
+		 * @param bytes
+		 *            要发送的字节数组
+		 */
+		public void sendDataByBulk(final byte[] data) {
+			new Thread(new Runnable() {
+
+				@SuppressLint("NewApi")
+				@Override
+				public void run() {
+					controlInterface = usbDevice.getInterface(6);
+					if (outEndpoint == null) {
+						outEndpoint = controlInterface.getEndpoint(1);
+					}
+					usbDeviceConnection.claimInterface(controlInterface, true);
+
+					int a = usbDeviceConnection.bulkTransfer(outEndpoint,data, 
+							data.length, StaticFinal.TIME_OUT);
+					
+					Message msg = Message.obtain();
+					if (a != -1) {
+						msg.what = StaticFinal.SENDDATA_CONTROL_SUCCESS;
+					} else {
+						msg.what = StaticFinal.SENDDATA_FAIL;
+					}
+
+					handler.sendMessage(msg);
+				}
+			}).start();
+
+		}
+		
+
+		/**
+		 * 读取录音数据
+		 */
+		public void receiveMusicDataByBulk() {
+			
+			isRecoder=true;
+			new Thread(new Runnable() {
+				
+
+				@Override
+				public void run() {
+
+					/** 64位的2维数组 */
+					if (controlInterface != null) {
+						usbDeviceConnection.releaseInterface(controlInterface);
+					}
+					bulkInterface = usbDevice.getInterface(5);
+
+					if (inEndpoint == null) {
+						inEndpoint = bulkInterface.getEndpoint(0);
+					}
+					usbDeviceConnection.claimInterface(bulkInterface, true);
+					
+					reciveMusicDataList.clear();
+					while (isRecoder) {
+						usbDeviceConnection.bulkTransfer(inEndpoint,receiveMusicData, receiveMusicData.length, StaticFinal.TIME_OUT);
+						
+						//剔除｛0000｝的数据
+						byte [] bTemp = new byte[4];
+						byte [] bTemp1 = {0, 0, 0, 0};
+						System.arraycopy(receiveMusicData, 0, bTemp, 0, 4);
+						if(!Arrays.equals(bTemp, bTemp1)){
+							//避免数据重复的问题，重新设置一个数组
+							byte[] receiverMusicData_temp = Arrays.copyOf(receiveMusicData, receiveMusicData.length);
+							synchronized (UsbDevicesUtil.this) {
+			 					reciveMusicDataList.add(receiverMusicData_temp);
+							}
+						}
+					}
+				}
+			}).start();
+		}
+		
+//	}
 }
+
+
+
