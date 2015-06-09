@@ -225,7 +225,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
 				// TODO 自动生成的方法存根
-				usbDevicesUtil.sendCtrlPack(StaticFinal.MICROPHONE_VOLUME, (byte)arg1);
+				usbDevicesUtil.sendCtrlPack(StaticFinal.MIC_VOLUME, (byte)arg1);
 			}
 		});
 		
