@@ -49,7 +49,7 @@ public class UsbDevicesUtil {
 	public List<byte[]> reciveMusicDataList = new ArrayList<byte[]>();
 
 	/** 控制发送数据给声卡 */
-	public ProtocolPack sendProtocolPackData = new ProtocolPack(); 
+	private ProtocolPack sendProtocolPackData = new ProtocolPack(); 
 	/** 控制发送数据给声卡 表*/
 //	public List<byte[]> sendProtocolPackDataList = new ArrayList<byte[]>();
 	/** 从声卡控制接收数据 */
@@ -374,7 +374,8 @@ public class UsbDevicesUtil {
 						System.arraycopy(receiveMusicData, 0, bTemp, 0, 4);
 						if(!Arrays.equals(bTemp, bTemp1)){
 							//避免数据重复的问题，重新设置一个数组
-							byte[] receiverMusicData_temp = Arrays.copyOf(receiveMusicData, receiveMusicData.length);
+							byte[] receiverMusicData_temp = new byte[receiveMusicData.length-4];
+							System.arraycopy(receiveMusicData, 4, receiverMusicData_temp, 0, receiveMusicData.length-4);
 							synchronized (UsbDevicesUtil.this) {
 			 					reciveMusicDataList.add(receiverMusicData_temp);
 							}

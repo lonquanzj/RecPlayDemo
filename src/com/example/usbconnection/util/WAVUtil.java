@@ -107,13 +107,13 @@ public class WAVUtil {
 		header[2] = 'F';
 		header[3] = 'F';
 
-		header[4] = (byte) (totalDataLen & 0xff);
+		header[4] = (byte) ((totalDataLen+44-8) & 0xff);
 
-		header[5] = (byte) ((totalDataLen >> 8) & 0xff);
+		header[5] = (byte) (((totalDataLen+44-8) >> 8) & 0xff);
 
-		header[6] = (byte) ((totalDataLen >> 16) & 0xff);
+		header[6] = (byte) (((totalDataLen+44-8) >> 16) & 0xff);
 
-		header[7] = (byte) ((totalDataLen >> 24) & 0xff);
+		header[7] = (byte) (((totalDataLen+44-8) >> 24) & 0xff);
 		header[8] = 'W';
 
 		header[9] = 'A';
@@ -129,7 +129,7 @@ public class WAVUtil {
 		header[14] = 't';
 
 		header[15] = ' ';
-		header[16] = 16; // 4 bytes: size of 'fmt ' chunk
+		header[16] = 0x12; // 4 bytes: size of 'fmt ' chunk
 
 		header[17] = 0;
 

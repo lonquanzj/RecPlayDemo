@@ -33,6 +33,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal" >
 
         <TextView
@@ -41,63 +42,14 @@
             android:layout_height="80dp"
             android:text="\n\n效果种类" />
    	    
-   	    <LinearLayout
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:orientation="vertical" >
-        
-			<RadioGroup
-		        android:id="@+id/rg_first"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:orientation="horizontal" >
-		        <RadioButton
-		            android:id="@+id/rb_xiaoguo1"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-            		android:enabled="false"
-		            android:text="效果1" />
-		        <RadioButton
-		            android:id="@+id/rb_xiaoguo2"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-            		android:enabled="false"
-		            android:text="效果2" />
-		        <RadioButton
-		            android:id="@+id/rb_xiaoguo3"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-            		android:enabled="false"
-		            android:text="效果3" />
-			</RadioGroup>
-		     
-			<RadioGroup
-		        android:id="@+id/rg_second"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:orientation="horizontal" >
-		        <RadioButton
-		            android:id="@+id/rb_xiaoguo4"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-            		android:enabled="false"
-		            android:text="效果4" />
-		
-		        <RadioButton
-		            android:id="@+id/rb_xiaoguo5"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-            		android:enabled="false"
-		            android:text="效果5" />
-		
-		        <RadioButton
-		            android:id="@+id/rb_xiaoguo6"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-            		android:enabled="false"
-		            android:text="效果6" />
-			</RadioGroup>
-		</LinearLayout>
+          <GridView  
+		      android:id="@+id/mygridview"
+		      android:numColumns="3"
+		      android:gravity="center_horizontal"
+		      android:layout_width="wrap_content"
+		      android:layout_height="wrap_content"
+		      android:stretchMode="columnWidth"/>
+  
     </LinearLayout>
     
     <LinearLayout
@@ -124,6 +76,15 @@
         	    android:progress="8"
         	    android:layout_weight="1" />
         	
+        	<TextView
+	            android:id="@+id/tv_effectStrength"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center_vertical"
+	            android:visibility="invisible"
+	            android:layout_weight="0"
+	            android:text="8" />
+        	
         </LinearLayout>
         
         <LinearLayout
@@ -144,6 +105,15 @@
         	    android:max="16"
         	    android:progress="8"
         	    android:layout_weight="1" />
+        	
+        	<TextView
+	            android:id="@+id/tv_headsetVolume"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center_vertical"
+	            android:visibility="invisible"
+	            android:layout_weight="0"
+	            android:text="8" />
 	        	
 	   </LinearLayout>   
 	   
@@ -165,6 +135,16 @@
         	    android:max="16"
         	    android:progress="8"
         	    android:layout_weight="1" />
+        	
+        	<TextView
+	            android:id="@+id/tv_microphoneVolume"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center_vertical"
+	            android:visibility="invisible"
+	            android:layout_weight="0"
+	            android:text="8" />
+        	
         </LinearLayout>
         
 	</LinearLayout>	    

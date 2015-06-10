@@ -1,24 +1,37 @@
 package com.example.usbconnection;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SimpleAdapter;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+
 
 import com.example.usbconnection.util.DataUtil;
 import com.example.usbconnection.util.UsbDevicesUtil;
@@ -80,20 +93,19 @@ public class MainActivity extends Activity {
 	private AlertDialog.Builder builder;
 	ListView listView;
 	
-	RadioButton rb_xiaoguo1;
-	RadioButton rb_xiaoguo2;
-	RadioButton rb_xiaoguo3;
-	RadioButton rb_xiaoguo4;
-	RadioButton rb_xiaoguo5;
-	RadioButton rb_xiaoguo6;
-	
 	SeekBar sbar_effectStrength;
 	SeekBar sbar_microphoneVolume;
 	SeekBar sbar_headsetVolume;
 	
+	TextView tv_effectStrenth;
+	TextView tv_headVol;
+	TextView tv_micVol;
+	
 	Button btn_shanbiSwitch;
 	Button btn_recStart;
 	Button btn_playMusic;
+	
+	private GridView gv;
 	
 	public boolean isRecoder = false;
 
@@ -106,11 +118,15 @@ public class MainActivity extends Activity {
 		
 		tv_message = (TextView) findViewById(R.id.tv_message);
 		
+		tv_effectStrenth = (TextView) findViewById(R.id.tv_effectStrength);
+		tv_headVol = (TextView) findViewById(R.id.tv_headsetVolume);
+		tv_micVol = (TextView) findViewById(R.id.tv_microphoneVolume);
+		
 		btn_recStart = (Button) findViewById(R.id.btn_recStart);
 		btn_shanbiSwitch = (Button) findViewById(R.id.btn_shanbiSwitch);
 		btn_playMusic = (Button) findViewById(R.id.btn_playMusic);
 		
-		initRadioButton();
+		initGridView();
 		initSeekBar();
 		
 		srollview = (ScrollView) findViewById(R.id.srollview);
@@ -118,63 +134,39 @@ public class MainActivity extends Activity {
 		connectionDevice();
 	}
 	
-	public void initRadioButton(){
-		rb_xiaoguo1 = (RadioButton) findViewById(R.id.rb_xiaoguo1);
-		rb_xiaoguo2 = (RadioButton) findViewById(R.id.rb_xiaoguo2);
-		rb_xiaoguo3 = (RadioButton) findViewById(R.id.rb_xiaoguo3);
-		rb_xiaoguo4 = (RadioButton) findViewById(R.id.rb_xiaoguo4);
-		rb_xiaoguo5 = (RadioButton) findViewById(R.id.rb_xiaoguo5);
-		rb_xiaoguo6 = (RadioButton) findViewById(R.id.rb_xiaoguo6);
-		
-		final RadioGroup[] radioGroup = new RadioGroup[2];
-		radioGroup[0] = (RadioGroup) findViewById(R.id.rg_first);
-		radioGroup[1] = (RadioGroup)/* lessonSelectView.*/findViewById(R.id.rg_second);
-		
-		for (int i = 0; i < 2; i++) {
-			radioGroup[i].setOnCheckedChangeListener(new OnCheckedChangeListener() {
-						public void onCheckedChanged(RadioGroup group,
-								int checkedId) {
-							// 判断是否有字按钮被选中(checked)
-							if (gainedSelectedValue(group, checkedId)) {
-								group.requestFocus();
-								gainedSelectedValue(group, checkedId);
-							}
-						}
-					});
+	public void initGridView(){
 
-			radioGroup[i].setOnFocusChangeListener(new View.OnFocusChangeListener() {
-						public void onFocusChange(View v, boolean hasFocus) {
-							if (hasFocus) {
-								RadioGroup group = (RadioGroup) v;
-								for (int j = 0; j < 3; j++) {
-									if (!radioGroup[j].equals(group)) {
-										if (radioGroup[j].getCheckedRadioButtonId() != -1) {
-											radioGroup[j].clearCheck();
-										}
-									}
-								}
-							}
-						}
-					});
+		
+		// 准备要添加的数据条目
+		List<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
+		for (int i = 0; i < 5; i++) {
+			Map<String, Object> item = new HashMap<String, Object>();
+			// item.put("imageItem", R.drawable.icon);//添加图像资源的ID
+			item.put("textItem", "效果" + (i + 1));// 按序号添加ItemText
+			items.add(item);
 		}
+
+		// 实例化一个适配器
+		SimpleAdapter adapter = new SimpleAdapter(this, items,
+				R.layout.grid_item, new String[] { "imageItem", "textItem" },
+				new int[] { R.id.image_item, R.id.text_item });
+
+		// 获得GridView实例
+		gv = (GridView) findViewById(R.id.mygridview);
+		// 为GridView设置适配器
+		gv.setAdapter(adapter);
+
+		gv.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View v,
+					int position, long id) {
+				Toast.makeText(MainActivity.this, "你选择了" + (position + 1) + " 号", Toast.LENGTH_SHORT).show();
+				usbDevicesUtil.sendCtrlPack(StaticFinal.EFFECT_TYPE, (byte)(position+1));
+			}
+		});
+		
+		gv.setSelector(new ColorDrawable(R.color.selectedBgColor));
 	}
 	
-	/**
-	 * 得到RadioGroup中选择的值(点选了哪个RadioButton) 判断RadioGroup中是否有RadioButton被checked
-	 * 
-	 * @param radioGroup
-	 * @param checkedId
-	 */
-	private boolean gainedSelectedValue(RadioGroup radioGroup, int checkedId) {
-		for (int i = 0; i < radioGroup.getChildCount(); i++) {
-			RadioButton btn = (RadioButton) radioGroup.getChildAt(i);
-			if (btn.getId() == checkedId) {
-				String selectedValue = (String) btn.getText();
-				return btn.isChecked();
-			}
-		}
-		return false;
-	}
 
 	public void initSeekBar(){
 		/*
@@ -334,12 +326,12 @@ public class MainActivity extends Activity {
 	 * 放音模式
 	 */
 	public void playMode(View view){
-		rb_xiaoguo1.setEnabled(false);
+/*		rb_xiaoguo1.setEnabled(false);
 		rb_xiaoguo2.setEnabled(false);
 		rb_xiaoguo3.setEnabled(false);
 		rb_xiaoguo4.setEnabled(false);
 		rb_xiaoguo5.setEnabled(false);
-		rb_xiaoguo6.setEnabled(false);
+		rb_xiaoguo6.setEnabled(false);*/
 		
 		sbar_effectStrength.setEnabled(false);
 		sbar_microphoneVolume.setEnabled(false);
@@ -351,12 +343,12 @@ public class MainActivity extends Activity {
 	 * 录音模式
 	 */
 	public void recMode(View view){
-		rb_xiaoguo1.setEnabled(true);
+		/*rb_xiaoguo1.setEnabled(true);
 		rb_xiaoguo2.setEnabled(true);
 		rb_xiaoguo3.setEnabled(true);
 		rb_xiaoguo4.setEnabled(true);
 		rb_xiaoguo5.setEnabled(true);
-		rb_xiaoguo6.setEnabled(true);
+		rb_xiaoguo6.setEnabled(true);*/
 		
 		sbar_effectStrength.setEnabled(true);
 		sbar_microphoneVolume.setEnabled(true);
